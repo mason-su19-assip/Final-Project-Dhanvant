@@ -1,0 +1,37 @@
+Create A Plan Here
+
+Explain/Description of the data
+    14 Variables
+      state.abb - 2 letter abbreviations for state names
+      state.area - square mile area
+      state.center - approximate geographic center (x,y) of each state
+      state.division - gives state divisions -list out
+      state.name - gives the states name
+      state.region - gives region that state belongs to -list out
+      state.x77
+        -Population
+          -population estimate asof July 1st, 1975
+        -Income
+          -Per captia income in 1974
+        -Illiteracy
+          -Illiteracy 1970, percent of population
+        -Life Exp
+          -Life expentancy in years (1969-71)
+        -Murder
+          -Murder/on-negligent manslaughter rate per 100,000 popluation (1976)
+        -HS Grad
+          -Percent High-School Graduates (1970)
+        -Frost
+          -mean number of days below freezing in capital/large city (1931-1960)
+        -Area
+          -Land area in square miles
+Graph/Visualization of the data
+    -First thoughts, Graph of the state.center
+    Note- ask how to get fancy markers
+Summarize stats
+    
+Correlation(Maybe) - Pearson's Correlation
+    corrplot() - Google it
+    
+Model building (Linear Regression)
+    lm()
