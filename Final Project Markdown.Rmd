@@ -7,9 +7,65 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-ssuppressPackageStartupMessages(library(tidyverse))
+
+#All the Libraries I might need
+suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(highcharter))
 suppressPackageStartupMessages(library(leaflet))
 suppressPackageStartupMessages(library(plotly))
+
+#Bring in the data
+state <- data(state)
+```
+
+
+#Leaflet Graph of the State Centers (Plus all the other data)
+```{r}
+state_x77_df <- as.data.frame(state.x77)
+
+leaflet()%>%
+  addTiles()%>%
+  setView(lng = -100, lat = 40, zoom = 4) %>%
+  addCircleMarkers(
+    lng = state.center$x,
+    lat = state.center$y,
+    popup = paste(
+      state.name,"<br>",
+      "Approximate Area in Square Miles:",state.area,"<br>",
+      "State Region:",state.region,"<br>",
+      "State Division:",state.division,"<br>",
+      "State Population as of July 1st, 1975:",state_x77_df$Population,"<br>",
+      "Income per Captia in 1974:",state_x77_df$Income,"<br>",
+      "State Illiteracy Rate in 1970:",state_x77_df$Illiteracy,"%","<br>",
+      "Life Expectancy from 1969-1971:",state_x77_df$`Life Exp`,"Years old","<br>",
+      "High School Graduation Rate in 1970:",state_x77_df$`HS Grad`,"%","<br>",
+      "Likelyhood of getting murdered in 1976:",as.numeric(state_x77_df$Murder)/1000,"%","<br>",
+      "Mean number of days spnt below freezing from 1931-1960:",state_x77_df$Frost,"Days"
+      )
+  )
+```
+
+#Histogram of states by area
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+    geom_histogram(mapping = aes(x = state.area), binwidth = 10000)+
+    labs(
+      title = paste("Nuber of states by Area"),
+      x = "Area",
+      y = "Number of states"
+    )
+)
+```
+
+#Histogram
+```{r}
+ad <- cbind(as.data.frame(state.area), as.data.frame(state.division))
+colnames(ad) <- c("area", "division")
+ad_new <-ad%>%
+  group_by(division)%>%
+  summarise(area = sum(area))
+
+hchart(ad_new, "bar",hcaes(x = ad_new$division, y = ad_new$area, color =RColorBrewer::brewer.pal(9, "Set1")))
 ```
 
