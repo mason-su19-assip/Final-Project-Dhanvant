@@ -7,9 +7,40 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
+#All the Libraries I might need
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(highcharter))
+suppressPackageStartupMessages(library(leaflet))
+suppressPackageStartupMessages(library(plotly))
+suppressPackageStartupMessages(library(modelr))
+suppressPackageStartupMessages(library(broom))
+suppressPackageStartupMessages(library(corrplot))
+suppressPackageStartupMessages(library(ggpubr))
+
+#Bring in the data
+state <- data(state)
+
+#Create Za Models
+state_x77_df <- as.data.frame(state.x77)
+hs_grad_murder_model <- lm(Murder ~ `HS Grad`, data = state_x77_df)
+illiteracy_murder_model <- lm(Murder ~ Illiteracy, data = state_x77_df)
+life_exp_murder_model <- lm(Murder ~ `Life Exp`, data = state_x77_df)
+income_murder_model <- lm(Murder ~ Income, data = state_x77_df)
+frost_murder_model <- lm(Murder ~ Frost, data = state_x77_df)
+hs_grad_illiteracy_model <- lm(Illiteracy ~ `HS Grad`, data = state_x77_df)
+life_exp_illiteracy_model <- lm(Illiteracy ~ `Life Exp`, data = state_x77_df)
+income_illiteracy_model <- lm(Illiteracy ~ Income, data = state_x77_df)
+frost_illiteracy_model <- lm(Illiteracy ~ Frost, data = state_x77_df)
+life_exp_hs_grad_model <- lm(`HS Grad` ~ `Life Exp`, data = state_x77_df)
+income_hs_grad_model <- lm(`HS Grad` ~ Income, data = state_x77_df)
+frost_hs_grad_model <- lm(`HS Grad` ~ Frost, data = state_x77_df)
+life_exp_income_model <- lm(Income ~ `Life Exp`, data = state_x77_df)
+frost_income_model <- lm(Income ~ Frost, data = state_x77_df)
+life_exp_frost_model <- lm(Frost ~ `Life Exp`, data = state_x77_df)
 ```
 
+Map
+=======================================================================
 Column {data-width=650}
 -----------------------------------------------------------------------
 
@@ -17,34 +48,246 @@ Column {data-width=650}
 
 ```{r}
 
+map <- leaflet()%>%
+  addTiles()%>%
+  setView(lng = -100, lat = 40, zoom = 4) %>%
+  addCircleMarkers(
+   lng = state.center$x,
+    lat = state.center$y,
+    popup = paste(
+      state.name,"<br>",
+      "Approximate Area in Square Miles:",state.area,"<br>",
+      "State Region:",state.region,"<br>",
+      "State Division:",state.division,"<br>",
+      "State Population as of July 1st, 1975:",state_x77_df$Population,"<br>",
+      "Income per Captia in 1974:",state_x77_df$Income,"<br>",
+      "State Illiteracy Rate in 1970:",state_x77_df$Illiteracy,"%","<br>",
+      "Life Expectancy from 1969-1971:",state_x77_df$`Life Exp`,"Years old","<br>",
+      "High School Graduation Rate in 1970:",state_x77_df$`HS Grad`,"%","<br>",
+      "Likelyhood of getting murdered in 1976:",as.numeric(state_x77_df$Murder)/1000,"%","<br>",
+      "Mean number of days spnt below freezing from 1931-1960:",state_x77_df$Frost,"Days"
+      )
+  )
+map
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
+States By Area
+=======================================================================
 
 ```{r}
-
+ 
+  ggplotly(ggplot(data = state_x77_df)+
+    geom_histogram(mapping = aes(x = state.area, color = state.abb), binwidth = 10000)+
+    labs(
+      title = paste("Number of states by Area"),
+      x = "Area",
+      y = "Number of states"
+    )
+)
 ```
 
-### Chart C
+
+State's Area By Divison
+=======================================================================
 
 ```{r}
+ad <- cbind(as.data.frame(state.area), as.data.frame(state.division))
+colnames(ad) <- c("area", "division")
+ad_new <-ad%>%
+  group_by(division)%>%
+  summarise(area = sum(area))
 
+hchart(ad_new, "bar",hcaes(x = ad_new$division, y = ad_new$area, color =RColorBrewer::brewer.pal(9, "Set1"))) %>%
+  hc_xAxis(title= list(text = "Divison"))%>%
+  hc_yAxis(title = list(text = "Area"))
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
 
-### Chart B
-
+Scatterplot
+=======================================================================
 ```{r}
 
-```
+hs_grad_murder_df <- state_x77_df %>%
+  add_predictions(hs_grad_murder_model)
 
-### Chart C
+hs_grad_murder_plot<- 
+  ggplot(data = hs_grad_murder_df)+
+  geom_point(mapping = aes(x = `HS Grad`, y = Murder, group = state.abb))+
+    geom_line(
+      mapping = aes(x =`HS Grad`, y = pred),
+      color = "red"
+    )
 
-```{r}
+illiteracy_murder_df <- state_x77_df %>%
+  add_predictions(illiteracy_murder_model)
 
+illiteracy_murder_plot<- 
+  ggplot(data = illiteracy_murder_df)+
+  geom_point(mapping = aes(x = Illiteracy, y = Murder, group = state.abb))+
+    geom_line(
+      mapping = aes(x =Illiteracy, y = pred),
+      color = "red"
+      )
+
+life_exp_murder_df <- state_x77_df %>%
+  add_predictions(life_exp_murder_model)
+
+life_exp_murder_plot<- 
+  ggplot(data = life_exp_murder_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = Murder, group = state.abb))+
+    geom_line(
+      mapping = aes(x = `Life Exp`, y = pred),
+      color = "red"
+    )
+
+income_murder_df <- state_x77_df %>%
+  add_predictions(income_murder_model)
+
+income_murder_plot<- 
+  ggplot(data = income_murder_df)+
+  geom_point(mapping = aes(x = Income, y = Murder, group = state.abb))+
+    geom_line(
+      mapping = aes(x = Income, y = pred),
+      color = "red"
+  )
+
+frost_murder_df <- state_x77_df %>%
+  add_predictions(frost_murder_model)
+
+frost_murder_plot<- 
+  ggplot(data = frost_murder_df)+
+  geom_point(mapping = aes(x = Frost, y = Murder,group = state.abb))+
+    geom_line(
+      mapping = aes(x = Frost, y = pred),
+      color = "red"
+    )
+
+hs_grad_illiteracy_df <- state_x77_df %>%
+  add_predictions(hs_grad_illiteracy_model)
+
+hs_grad_illiteracy_plot<- 
+  ggplot(data = hs_grad_illiteracy_df)+
+  geom_point(mapping = aes(x = `HS Grad`, y = Illiteracy, group = state.abb))+
+    geom_line(
+      mapping = aes(x = `HS Grad`, y = pred),
+      color = "red"
+    )
+
+life_exp_illiteracy_df <- state_x77_df %>%
+  add_predictions(life_exp_illiteracy_model)
+
+life_exp_illiteracy_plot<- 
+  ggplot(data = life_exp_illiteracy_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = Illiteracy, group = state.abb))+
+    geom_line(
+      mapping = aes(x = `Life Exp`, y = pred),
+      color = "red"
+    )
+
+income_illiteracy_df <- state_x77_df %>%
+  add_predictions(income_illiteracy_model)
+
+income_illiteracy_plot<- 
+  ggplot(data = income_illiteracy_df)+
+  geom_point(mapping = aes(x = Income, y = Illiteracy, group = state.abb))+
+    geom_line(
+      mapping = aes(x = Income, y = pred),
+      color = "red"
+    )
+
+frost_illiteracy_df <- state_x77_df %>%
+  add_predictions(frost_illiteracy_model)
+
+frost_illiteracy_plot<- 
+  ggplot(data = frost_illiteracy_df)+
+  geom_point(mapping = aes(x = Frost, y = Illiteracy, group = state.abb))+
+    geom_line(
+      mapping = aes(x = Frost, y = pred),
+      color = "red"
+    )
+
+life_exp_hs_grad_df <- state_x77_df %>%
+  add_predictions(life_exp_hs_grad_model)
+
+life_exp_hs_grad_plot<- 
+  ggplot(data = life_exp_hs_grad_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = `HS Grad`, group = state.abb))+
+    geom_line(
+      mapping = aes(x = `Life Exp`, y = pred),
+      color = "red"
+    )
+
+
+income_hs_grad_df <- state_x77_df %>%
+  add_predictions(income_hs_grad_model)
+
+income_hs_grad_plot<- 
+  ggplot(data = income_hs_grad_df)+
+  geom_point(mapping = aes(x = Income, y = `HS Grad`, group = state.abb))+
+    geom_line(
+      mapping = aes(x = Income, y = pred),
+      color = "red"
+    )
+
+
+frost_hs_grad_df <- state_x77_df %>%
+  add_predictions(frost_hs_grad_model)
+
+frost_hs_grad_plot<- 
+  ggplot(data = frost_hs_grad_df)+
+  geom_point(mapping = aes(x = Frost, y = `HS Grad`, group = state.abb))+
+    geom_line(
+      mapping = aes(x = Frost, y = pred),
+      color = "red"
+    )
+
+frost_income_df <- state_x77_df %>%
+  add_predictions(frost_income_model)
+
+frost_income_plot<- 
+  ggplot(data = frost_income_df)+
+  geom_point(mapping = aes(x = Frost, y = Income, group = state.abb))+
+    geom_line(
+      mapping = aes(x = Frost, y = pred),
+      color = "red"
+    )
+
+life_exp_income_df <- state_x77_df %>%
+  add_predictions(life_exp_income_model)
+
+life_exp_income_plot<- 
+  ggplot(data = life_exp_income_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = Income, group = state.abb))+
+    geom_line(
+      mapping = aes(x = `Life Exp`, y = pred),
+      color = "red"
+    )
+
+life_exp_frost_df <- state_x77_df %>%
+  add_predictions(life_exp_frost_model)
+
+life_exp_frost_plot<- 
+  ggplot(data = life_exp_frost_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = Frost, group = state.abb))+
+    geom_line(
+      mapping = aes(x = `Life Exp`, y = pred),
+      color = "red"
+    )
+
+ggarrange(hs_grad_murder_plot,
+         illiteracy_murder_plot,
+         life_exp_murder_plot,
+         income_murder_plot, 
+         frost_murder_plot, 
+         hs_grad_illiteracy_plot, 
+         life_exp_illiteracy_plot,
+         income_illiteracy_plot,
+         frost_illiteracy_plot,
+         income_hs_grad_plot,  
+         life_exp_hs_grad_plot,
+         frost_hs_grad_plot,
+         life_exp_income_plot,
+         frost_income_plot,
+         life_exp_frost_plot
+         )
 ```

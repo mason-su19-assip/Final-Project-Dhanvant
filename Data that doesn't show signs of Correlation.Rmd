@@ -1,0 +1,92 @@
+---
+title: "Data Correlation Testing"
+author: "Dhanvant Ganapathiraju"
+date: "6/27/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Data that Doesn't Correlate
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Area, y = Murder, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Population, y = Murder, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Population, y = Illiteracy, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Area, y = Illiteracy, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Area, y = `HS Grad`, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Population, y = `HS Grad`, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Frost, y = Area, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = Area, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Income, y = Area, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Population, y = Area, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Frost, y = Population, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = `Life Exp`, y = Population, group = state.abb)))
+```
+
+```{r}
+ggplotly(
+  ggplot(data = state_x77_df)+
+  geom_point(mapping = aes(x = Income, y = Population, group = state.abb)))
+```
+
+
