@@ -39,6 +39,169 @@ frost_income_model <- lm(Income ~ Frost, data = state_x77_df)
 life_exp_frost_model <- lm(Frost ~ `Life Exp`, data = state_x77_df)
 ```
 
+```{r}
+slopeHSG_M <--0.22302
+interceptHSG_M <-19.22236
+pHSG_M <-.0003248
+r2HSG_M <-.2381
+ar2HSG_M <-.2222
+
+slopeI_M <-4.2575
+interceptI_M <-2.3968
+pI_M <-1.258e-08
+r2I_M <-.4942
+ar2I_M <-.4836
+
+slopeLE_M <--2.147
+interceptLE_M <-159.576
+pLE_M <-2.26e-11
+r2LE_M <-.6097
+ar2LE_M <-.6016
+
+slopeIn_M <--0.0013822
+interceptIn_M <-13.5093092
+pIn_M <-0.108
+r2In_M <-.05294
+ar2In_M <-.03321
+
+slopeF_M <--0.038270
+interceptF_M <-11.375689
+pF_M <-5.405e-05
+r2F_M <-.2904
+ar2F_M <-.2756
+
+slopeHSG_I <--0.04960
+interceptHSG_I <-3.80389
+pHSG_I <-2.172e-07
+r2HSG_I <-0.4319
+ar2HSG_I <-0.4201
+
+slopeLE_I <--0.26721
+interceptLE_I <-20.10925
+pLE_I <-6.969e-06
+r2LE_I <-0.3463
+ar2LE_I <-0.3327
+
+slopeIn_I <--0.0004336
+interceptIn_I <-3.0932014
+pIn_I <-0.001505
+r2In_I <-0.191
+ar2In_I <-0.1742
+
+slopeF_I <--0.007879
+interceptF_I <-1.993074
+pF_I <-9.156e-08
+r2F_I <-0.4515
+ar2F_I <-0.4401
+
+slopeLE_HS <-3.5031 
+interceptLE_HS <--195.1879
+pLE_HS <-9.196e-06
+r2LE_HS <-0.339
+ar2LE_HS <-0.3252 
+
+slopeIn_HS <-0.008149
+interceptIn_HS <-16.961557
+pIn_HS <-1.579e-06
+r2In_HS <-0.3843
+ar2In_HS <-0.3715
+
+slopeF_HS <-0.05699
+interceptF_HS <-47.15464
+pF_HS <-0.008795
+r2F_HS <-0.1345
+ar2F_HS <-0.1165
+
+slopeLE_In <-155.75
+interceptLE_In <--6603.48
+pLE_In <-0.01562
+r2LE_In <-0.1158
+ar2LE_In <-0.09735 
+
+slopeF_In <-2.675
+interceptF_In <-4156.380
+pF_In <-0.1141
+r2F_In <-0.0512
+ar2F_In <-0.03144
+
+slopeLE_F <-10.148
+interceptLE_F <--614.811
+pLE_F <-0.06599
+r2LE_F <-0.06868
+ar2LE_F <-0.04928 
+
+
+pIncome <- c(pLE_In, pF_In)
+
+pFrost <- c(pLE_F)
+
+r2Frost <- c(r2LE_F)
+
+ar2Frost <- c(ar2LE_F)
+
+slopeFrost <- c(slopeLE_F)
+
+interceptFrost <- c(interceptLE_F)
+
+frost_stats <- cbind(slopeFrost, interceptFrost, pFrost, r2Frost, ar2Frost)
+colnames(frost_stats) <- c("Slope","Intercept", "P-Value", "R Squared Value", "Adjusted R Squared Value")
+rownames(frost_stats) <- c("Life Exp")
+
+r2Income <- c(r2LE_In, r2F_In)
+
+ar2Income <- c(ar2LE_In, ar2F_In)
+
+slopeIncome <- c(slopeLE_In, slopeF_In)
+
+interceptIncome <- c(interceptLE_In, interceptF_In)
+
+income_stats <- cbind(slopeIncome, interceptIncome, pIncome, r2Income, ar2Income)
+colnames(income_stats) <- c("Slope","Intercept", "P-Value", "R Squared Value", "Adjusted R Squared Value")
+rownames(income_stats) <- c("Life Exp", "Frost")
+
+pHS <- c(pLE_HS, pIn_HS, pF_HS)
+
+r2HS <- c(r2LE_HS, r2In_HS, r2F_HS)
+
+ar2HS <- c(ar2LE_HS, ar2In_HS, ar2F_HS)
+
+slopeHS <- c(slopeLE_HS, slopeIn_HS, slopeF_HS)
+
+interceptHS <- c(interceptLE_HS, interceptIn_HS, interceptF_HS)
+
+hs_grad_stats <- cbind(slopeHS, interceptHS, pHS, r2HS, ar2HS)
+colnames(hs_grad_stats) <- c("Slope","Intercept", "P-Value", "R Squared Value", "Adjusted R Squared Value")
+rownames(hs_grad_stats) <- c("Life Exp", "Income", "Frost")
+
+pIlliteracy <- c(pHSG_I, pLE_I, pIn_I, pF_I)
+
+r2Illiteracy <- c(r2HSG_I, r2LE_I, r2In_I, r2F_I)
+
+ar2Illiteracy <- c(ar2HSG_I, ar2LE_I, ar2In_I, ar2F_I)
+
+slopeIlliteracy <- c(slopeHSG_I, slopeLE_I, slopeIn_I, slopeF_I)
+
+interceptIlliteracy <- c(interceptHSG_I, interceptLE_I, interceptIn_I, interceptF_I)
+
+illiteracy_stats <- cbind(slopeIlliteracy, interceptIlliteracy, pIlliteracy, r2Illiteracy, ar2Illiteracy)
+colnames(illiteracy_stats) <- c("Slope","Intercept", "P-Value", "R Squared Value", "Adjusted R Squared Value")
+rownames(illiteracy_stats) <- c("HS Grad", "Life Exp", "Income", "Frost")
+
+pMurder <- c(pHSG_M, pI_M, pLE_M, pIn_M, pF_M)
+
+r2Murder <- c(r2HSG_M, r2I_M, r2LE_M, r2In_M, r2F_M)
+
+ar2Murder <- c(ar2HSG_M, ar2I_M, ar2LE_M, ar2In_M, ar2F_M)
+
+slopeMurder <- c(slopeHSG_M, slopeI_M, slopeLE_M, slopeIn_M, slopeF_M)
+
+interceptMurder <- c(interceptHSG_M, interceptI_M, interceptLE_M, interceptIn_M, interceptF_M)
+
+murder_stats <- cbind(slopeMurder, interceptMurder, pMurder, r2Murder, ar2Murder)
+colnames(murder_stats) <- c("Slope","Intercept", "P-Value", "R Squared Value", "Adjusted R Squared Value")
+rownames(murder_stats) <- c("HS Grad", "Illiteracy", "Life Exp", "Income", "Frost")
+```
+
 Map
 =======================================================================
 Column {data-width=650}
@@ -90,7 +253,7 @@ States By Area
 ```
 
 
-State's Area By Divison
+State's Area By Division
 =======================================================================
 
 ```{r}
@@ -129,7 +292,7 @@ ggplot(data = ad_new)+
 ```
 
 
-Scatterplot
+Scatter plot
 =======================================================================
 ```{r}
 
@@ -317,3 +480,24 @@ ggarrange(hs_grad_murder_plot,
          life_exp_frost_plot
          )
 ```
+
+Table
+=======================================================================
+Column {data-width = 350}
+-----------------------------------------------------------------------
+```{r}
+murder_stats
+
+illiteracy_stats
+```
+
+Column {data-width = 350}
+-----------------------------------------------------------------------
+```{r}
+hs_grad_stats
+
+income_stats
+
+frost_stats
+```
+
