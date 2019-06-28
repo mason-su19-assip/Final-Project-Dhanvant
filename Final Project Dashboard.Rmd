@@ -219,6 +219,7 @@ map <- leaflet()%>%
     lat = state.center$y,
     popup = paste(
       state.name,"<br>",
+      "State Abbreviation:", state.abb, "<br>",
       "Approximate State Area in Square Miles:",state.area,"<br>",
       "Approximate Land Area in Square Miles:",state_x77_df$Area,"<br>",
       "State Region:",state.region,"<br>",
