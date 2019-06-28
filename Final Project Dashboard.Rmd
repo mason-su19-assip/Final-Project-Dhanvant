@@ -56,7 +56,8 @@ map <- leaflet()%>%
     lat = state.center$y,
     popup = paste(
       state.name,"<br>",
-      "Approximate Area in Square Miles:",state.area,"<br>",
+      "Approximate State Area in Square Miles:",state.area,"<br>",
+      "Approximate Land Area in Square Miles:",state_x77_df$Area,"<br>",
       "State Region:",state.region,"<br>",
       "State Division:",state.division,"<br>",
       "State Population as of July 1st, 1975:",state_x77_df$Population,"<br>",
@@ -76,13 +77,15 @@ States By Area
 
 ```{r}
  
-  ggplotly(ggplot(data = state_x77_df)+
+  ggplotly(
+    ggplot(data = state_x77_df)+
     geom_histogram(mapping = aes(x = state.area, color = state.abb), binwidth = 10000)+
     labs(
       title = paste("Number of states by Area"),
       x = "Area",
       y = "Number of states"
-    )
+    )+
+    theme(plot.title = element_text(size = 30), axis.title.x = element_text(size = 30), axis.title.y = element_text(size = 30))
 )
 ```
 
@@ -91,15 +94,38 @@ State's Area By Divison
 =======================================================================
 
 ```{r}
-ad <- cbind(as.data.frame(state.area), as.data.frame(state.division))
+
+division <-as.data.frame(state.division)
+division2 <- c("ESC", "Pacific", "Mount", "WSC", "Pacific",
+               "Mount", "New En", "SAtlantic", "SAtlantic",
+               "SAtlantic", "Pacific", "Mount", "ENC", "ENC",
+               "WNC", "WNC", "ESC", "WSC","New En","SAtlantic",
+               "New En","ENC","WNC","ESC","WNC", "Mount", "WNC",
+               "Mount","New En", "MAtlantic","Mount", "MAtlantic"
+               ,"SAtlantic","WNC","ENC","WSC","Pacific","MAtlantic",
+               "New En","SAtlantic","WNC", "ESC", "WSC", "Mount", "New En"
+               ,"SAtlantic", "Pacific", "SAtlantic", "ENC", "Mount")
+ad <- cbind(as.data.frame(state.area), division2)
 colnames(ad) <- c("area", "division")
 ad_new <-ad%>%
   group_by(division)%>%
   summarise(area = sum(area))
 
-hchart(ad_new, "bar",hcaes(x = ad_new$division, y = ad_new$area, color =RColorBrewer::brewer.pal(9, "Set1"))) %>%
-  hc_xAxis(title= list(text = "Divison"))%>%
-  hc_yAxis(title = list(text = "Area"))
+mytheme <- hc_theme(strip.text = element_text(size = 25))
+
+ggplot(data = ad_new)+
+  geom_col(mapping = aes(x = ad_new$division, y = ad_new$area),fill =RColorBrewer::brewer.pal(9, "Set1")) +
+      labs(title = "State Area By Division",
+       x = "Division",
+       y = "Area")+
+    theme(plot.title = element_text(size = 20), axis.title.x = element_text(size = 20), axis.title.y = element_text(size = 20))
+
+#hchart(ad_new, "bar",hcaes(x = ad_new$division, y = ad_new$area, color =RColorBrewer::brewer.pal(9, "Set1"))) %>%
+ # hc_xAxis(title= list(text = "Divison"))%>%
+ # hc_yAxis(title = list(text = "Area"))%>%
+ # hc_title(text = "States Area by Divison")
+
+
 ```
 
 

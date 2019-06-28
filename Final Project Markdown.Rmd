@@ -69,7 +69,9 @@ ad_new <-ad%>%
   group_by(division)%>%
   summarise(area = sum(area))
 
-hchart(ad_new, "bar",hcaes(x = ad_new$division, y = ad_new$area, color =RColorBrewer::brewer.pal(9, "Set1")))
+hchart(ad_new, "bar",hcaes(x = ad_new$division, y = ad_new$area, color =RColorBrewer::brewer.pal(9, "Set1"))) %>%
+  hc_xAxis(title= list(text = "Divison"))%>%
+  hc_yAxis(title = list(text = "Area"))
 ```
 
 #Model Building
